@@ -188,39 +188,4 @@ All colors MUST be HSL.
   .animate-pulse-subtle {
     animation: pulse-subtle 3s ease-in-out infinite;
   }
-  
-  @keyframes color-cycle {
-    0%, 100% {
-      filter: hue-rotate(0deg) saturate(1);
-    }
-    33% {
-      filter: hue-rotate(120deg) saturate(1.2);
-    }
-    66% {
-      filter: hue-rotate(240deg) saturate(1.2);
-    }
-  }
-  
-  .animate-color-cycle {
-    animation: color-cycle 6s ease-in-out infinite;
-  }
-  
-  @keyframes border-flow {
-    0%, 100% {
-      border-color: hsl(15, 92%, 58%);
-      box-shadow: 0 0 20px hsl(15, 92%, 58% / 0.3);
-    }
-    33% {
-      border-color: hsl(265, 75%, 60%);
-      box-shadow: 0 0 20px hsl(265, 75%, 60% / 0.3);
-    }
-    66% {
-      border-color: hsl(195, 100%, 55%);
-      box-shadow: 0 0 20px hsl(195, 100%, 55% / 0.3);
-    }
-  }
-  
-  .animate-border-flow {
-    animation: border-flow 4s ease-in-out infinite;
-  }
 }

@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Menu, X, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { ColorShift } from "@/components/ui/color-shift";
 import { useUserRole } from "@/hooks/useUserRole";
 
 const Navbar = () => {
@@ -45,23 +44,16 @@ const Navbar = () => {
           {/* Auth Button */}
           <div className="hidden md:flex items-center space-x-4">
             {user ? (
-              <ColorShift hoverScale={1.05}>
-                <Button asChild variant="default" size="sm" className="gap-2" withRipple>
-                  <Link to={dashboardPath}>
-                    <User className="h-4 w-4" />
-                    {dashboardLabel}
-                  </Link>
-                </Button>
-              </ColorShift>
+              <Button asChild variant="default" size="sm" className="gap-2">
+                <Link to={dashboardPath}>
+                  <User className="h-4 w-4" />
+                  {dashboardLabel}
+                </Link>
+              </Button>
             ) : (
-              <ColorShift hoverScale={1.05}>
-                <Button asChild variant="default" size="sm" className="gap-2" withRipple>
-                  <Link to="/auth">
-                    <User className="h-4 w-4" />
-                    Login / Sign Up
-                  </Link>
-                </Button>
-              </ColorShift>
+              <Button asChild variant="default" size="sm">
+                <Link to="/auth">Sign In / Sign Up</Link>
+              </Button>
             )}
           </div>
 
@@ -76,31 +68,28 @@ const Navbar = () => {
 
         {/* Mobile Navigation */}
         {isOpen && (
-          <div className="md:hidden py-4 border-t border-border">
-            <div className="flex flex-col space-y-2">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.path}
-                  to={link.path}
-                  onClick={() => setIsOpen(false)}
-                  className="px-4 py-2 rounded-lg text-sm font-medium hover:bg-muted transition-colors"
-                >
-                  {link.name}
-                </Link>
-              ))}
+          <div className="md:hidden py-4 space-y-2">
+            {navLinks.map((link) => (
+              <Link
+                key={link.path}
+                to={link.path}
+                onClick={() => setIsOpen(false)}
+                className="block px-4 py-2 rounded-lg hover:bg-muted transition-colors"
+              >
+                {link.name}
+              </Link>
+            ))}
+            <div className="px-4 pt-2">
               {user ? (
-                <Button asChild variant="default" size="sm" className="gap-2 mx-4" withRipple>
-                  <Link to={dashboardPath} onClick={() => setIsOpen(false)}>
+                <Button asChild variant="default" size="sm" className="w-full gap-2">
+                  <Link to={dashboardPath}>
                     <User className="h-4 w-4" />
                     {dashboardLabel}
                   </Link>
                 </Button>
               ) : (
-                <Button asChild variant="default" size="sm" className="gap-2 mx-4" withRipple>
-                  <Link to="/auth" onClick={() => setIsOpen(false)}>
-                    <User className="h-4 w-4" />
-                    Login / Sign Up
-                  </Link>
+                <Button asChild variant="default" size="sm" className="w-full">
+                  <Link to="/auth">Sign In / Sign Up</Link>
                 </Button>
               )}
             </div>
