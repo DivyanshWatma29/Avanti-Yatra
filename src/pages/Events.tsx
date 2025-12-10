@@ -8,134 +8,34 @@ import { Badge } from "@/components/ui/badge";
 import { Calendar, MapPin, AlertCircle } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const Events = () => {
   const [festivals, setFestivals] = useState<any[]>([]);
+  const [temples, setTemples] = useState<any[]>([]);
   const [alerts, setAlerts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchFestivals();
-    fetchAlerts();
+    fetchData();
   }, []);
 
-  const fetchFestivals = async () => {
-    const { data, error } = await supabase
-      .from("festivals")
-      .select("*")
-      .order("start_date", { ascending: true });
+  const fetchData = async () => {
+    const [festivalsRes, templesRes, alertsRes] = await Promise.all([
+      supabase.from("festivals").select("*").order("start_date", { ascending: true }),
+      supabase.from("temples").select("id, name, slug").eq("is_active", true),
+      supabase.from("alerts").select("*").eq("is_active", true).order("created_at", { ascending: false }),
+    ]);
 
-    if (data && data.length > 0) {
-      setFestivals(data);
-    }
+    if (festivalsRes.data) setFestivals(festivalsRes.data);
+    if (templesRes.data) setTemples(templesRes.data);
+    if (alertsRes.data) setAlerts(alertsRes.data);
     setLoading(false);
   };
 
-  const fetchAlerts = async () => {
-    const { data } = await supabase
-      .from("alerts")
-      .select("*")
-      .eq("is_active", true)
-      .order("created_at", { ascending: false });
-
-    if (data) {
-      setAlerts(data);
-    }
-  };
-
-  const defaultEvents = [
-    {
-      name: "Kartik Purnima Ujjain Mahotsav",
-      start_date: "2025-11-15",
-      temple_id: "mahakaleshwar",
-      category: "Cultural + Spiritual",
-      description: "Grand processions, lighting ceremonies, and Ganga aarti-style rituals at Ujjain. A beautiful celebration with thousands of oil lamps.",
-    },
-    {
-      name: "Omkareshwar Narmada Aarti Festival",
-      start_date: "2025-01-01",
-      temple_id: "omkareshwar",
-      category: "Daily Event",
-      description: "Daily evening Aarti on Narmada River ghats at 7 PM. Witness the mesmerizing spectacle of lamps floating on the sacred river.",
-    },
-    {
-      name: "Salkanpur Navratri Maha Mela",
-      start_date: "2025-03-30",
-      end_date: "2025-04-07",
-      temple_id: "salkanpur",
-      category: "Festival",
-      description: "9 days of devotion with lakhs of devotees, bhajans, and extended darshan queues. Special arrangements for pilgrims.",
-    },
-    {
-      name: "Maihar Sharda Devi Sharad Purnima Darshan",
-      start_date: "2025-10-13",
-      temple_id: "maihar",
-      category: "Special Darshan",
-      description: "Special night darshan with ropeway timings extended till midnight. Moonlit prayers at the hilltop temple.",
-    },
-    {
-      name: "Indore Khajrana Ganesh Pran Pratishtha Day",
-      start_date: "2025-09-15",
-      temple_id: "khajrana",
-      category: "Festival",
-      description: "Annual festival celebrating the consecration of Lord Ganesha with special poojas and prasad distribution.",
-    },
-    {
-      name: "Mahashivratri at Mahakaleshwar",
-      start_date: "2025-02-26",
-      temple_id: "mahakaleshwar",
-      category: "Festival",
-      description: "Grand celebration of Lord Shiva with special night-long prayers, Bhasma Aarti, and rituals at Mahakaleshwar Temple.",
-    },
-    {
-      name: "Chaitra Navratri at Maihar",
-      start_date: "2025-03-30",
-      end_date: "2025-04-07",
-      temple_id: "maihar",
-      category: "Festival",
-      description: "Nine days of devotion to Goddess Sharda with special darshan arrangements and ropeway services.",
-    },
-    {
-      name: "Shravan Month Celebrations",
-      start_date: "2025-07-17",
-      end_date: "2025-08-15",
-      temple_id: "mahakaleshwar",
-      category: "Festival",
-      description: "Holy month dedicated to Lord Shiva with special Rudrabhishek ceremonies every Monday.",
-    },
-    {
-      name: "Ganesh Chaturthi at Khajrana",
-      start_date: "2025-08-27",
-      temple_id: "khajrana",
-      category: "Festival",
-      description: "10-day celebration of Lord Ganesha's birth with elaborate decorations, cultural programs, and special pujas.",
-    },
-    {
-      name: "Sharad Navratri at Salkanpur",
-      start_date: "2025-09-22",
-      end_date: "2025-09-30",
-      temple_id: "salkanpur",
-      category: "Festival",
-      description: "Nine nights of worship to Goddess Vindhyavasini with grand celebrations and cultural programs.",
-    },
-  ];
-
-  const displayEvents = festivals.length > 0 ? festivals : defaultEvents;
-
   const getTempleName = (templeId: string) => {
-    const temples: { [key: string]: string } = {
-      mahakaleshwar: "Mahakaleshwar Temple, Ujjain",
-      omkareshwar: "Omkareshwar Temple, Khandwa",
-      kalbhairav: "Kal Bhairav Temple, Ujjain",
-      maihar: "Maihar Temple, Satna",
-      salkanpur: "Salkanpur Temple, Sehore",
-      khajrana: "Khajrana Ganesh Temple, Indore",
-      "chintaman-ganesh": "Chintaman Ganesh Temple, Ujjain",
-      bhojpur: "Bhojpur Shiv Mandir, Bhopal",
-      jatashankar: "Jatashankar Mahadev, Pachmarhi",
-      "kaal-bhairav-dhar": "Kaal Bhairav Temple, Dhar",
-    };
-    return temples[templeId] || "All Temples";
+    const temple = temples.find((t) => t.id === templeId || t.slug === templeId);
+    return temple?.name || "All Temples";
   };
 
   const getCategoryColor = (category: string) => {
@@ -146,10 +46,6 @@ const Events = () => {
       "Daily Event": "bg-muted text-muted-foreground",
     };
     return colors[category] || "bg-primary text-primary-foreground";
-  };
-
-  const getAlertIcon = (alertType: string) => {
-    return AlertCircle;
   };
 
   return (
@@ -186,14 +82,20 @@ const Events = () => {
 
       <section className="container mx-auto px-4 py-16">
         {loading ? (
-          <div className="text-center py-12">
-            <p>Loading events...</p>
+          <div className="space-y-6">
+            <div className="flex gap-6 overflow-hidden">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="w-80 flex-shrink-0">
+                  <Skeleton className="h-40 w-full rounded-lg" />
+                </div>
+              ))}
+            </div>
           </div>
-        ) : (
+        ) : festivals.length > 0 ? (
           <div className="space-y-6">
             <div className="overflow-x-auto pb-4">
               <div className="flex gap-6 min-w-max">
-                {displayEvents.map((event, index) => (
+                {festivals.map((event, index) => (
                   <Dialog key={index}>
                     <DialogTrigger asChild>
                       <Card className="w-80 cursor-pointer hover:shadow-lg transition-all temple-card">
@@ -269,7 +171,7 @@ const Events = () => {
             <div className="max-w-3xl mx-auto mt-12">
               <h2 className="text-2xl font-bold mb-6 text-center">All Festivals & Events</h2>
               <div className="grid gap-4">
-                {displayEvents.map((event, index) => (
+                {festivals.map((event, index) => (
                   <Card key={index}>
                     <CardHeader>
                       <div className="flex items-start justify-between">
@@ -308,6 +210,14 @@ const Events = () => {
                 ))}
               </div>
             </div>
+          </div>
+        ) : (
+          <div className="text-center py-20">
+            <Calendar className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
+            <p className="text-xl text-muted-foreground mb-2">No events scheduled</p>
+            <p className="text-sm text-muted-foreground">
+              Admin can add events from the dashboard
+            </p>
           </div>
         )}
       </section>

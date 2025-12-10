@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import BackButton from "@/components/BackButton";
 import SearchBar from "@/components/SearchBar";
 import TempleCard from "@/components/TempleCard";
-import { temples } from "@/data/temples";
 import {
   Select,
   SelectContent,
@@ -12,26 +12,41 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import mahakaleshwar from "@/assets/mahakaleshwar.jpg";
-import omkareshwar from "@/assets/omkareshwar.jpg";
-import kalbhairav from "@/assets/kalbhairav.jpg";
-import maihar from "@/assets/maihar.jpg";
-import salkanpur from "@/assets/salkanpur.jpg";
-import khajrana from "@/assets/khajrana.jpg";
+import { Skeleton } from "@/components/ui/skeleton";
+
+interface Temple {
+  id: string;
+  name: string;
+  slug: string;
+  district: string;
+  type: string;
+  description: string | null;
+  image_url: string | null;
+  is_active: boolean | null;
+}
 
 const Temples = () => {
+  const [temples, setTemples] = useState<Temple[]>([]);
+  const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [districtFilter, setDistrictFilter] = useState("all");
   const [typeFilter, setTypeFilter] = useState("all");
-  const [crowdFilter, setCrowdFilter] = useState("all");
 
-  const templeImages: { [key: string]: string } = {
-    mahakaleshwar,
-    omkareshwar,
-    kalbhairav,
-    maihar,
-    salkanpur,
-    khajrana,
+  useEffect(() => {
+    fetchTemples();
+  }, []);
+
+  const fetchTemples = async () => {
+    const { data, error } = await supabase
+      .from("temples")
+      .select("*")
+      .eq("is_active", true)
+      .order("name");
+
+    if (data) {
+      setTemples(data);
+    }
+    setLoading(false);
   };
 
   const districts = Array.from(new Set(temples.map((t) => t.district)));
@@ -40,12 +55,12 @@ const Temples = () => {
   const filteredTemples = temples.filter((temple) => {
     const matchesSearch =
       temple.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      temple.district.toLowerCase().includes(searchTerm.toLowerCase());
+      temple.district.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      temple.type.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesDistrict = districtFilter === "all" || temple.district === districtFilter;
     const matchesType = typeFilter === "all" || temple.type === typeFilter;
-    const matchesCrowd = crowdFilter === "all" || temple.crowdLevel === crowdFilter;
 
-    return matchesSearch && matchesDistrict && matchesType && matchesCrowd;
+    return matchesSearch && matchesDistrict && matchesType;
   });
 
   return (
@@ -70,7 +85,7 @@ const Temples = () => {
         <div className="space-y-6">
           <SearchBar onSearch={setSearchTerm} />
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Select value={districtFilter} onValueChange={setDistrictFilter}>
               <SelectTrigger>
                 <SelectValue placeholder="Filter by District" />
@@ -98,43 +113,45 @@ const Temples = () => {
                 ))}
               </SelectContent>
             </Select>
-
-            <Select value={crowdFilter} onValueChange={setCrowdFilter}>
-              <SelectTrigger>
-                <SelectValue placeholder="Filter by Crowd Level" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Crowd Levels</SelectItem>
-                <SelectItem value="Low">Low</SelectItem>
-                <SelectItem value="Medium">Medium</SelectItem>
-                <SelectItem value="High">High</SelectItem>
-              </SelectContent>
-            </Select>
           </div>
         </div>
       </section>
 
       {/* Temples Grid */}
       <section className="container mx-auto px-4 pb-20">
-        {filteredTemples.length > 0 ? (
+        {loading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <div key={i} className="space-y-4">
+                <Skeleton className="h-48 w-full rounded-lg" />
+                <Skeleton className="h-6 w-3/4" />
+                <Skeleton className="h-4 w-1/2" />
+              </div>
+            ))}
+          </div>
+        ) : filteredTemples.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredTemples.map((temple) => (
               <TempleCard
                 key={temple.id}
-                id={temple.id}
+                id={temple.slug}
                 name={temple.name}
-                image={templeImages[temple.id]}
+                image={temple.image_url || "/placeholder.svg"}
                 district={temple.district}
-                timings={temple.timings}
+                timings="5:00 AM - 11:00 PM"
                 type={temple.type}
-                description={temple.description}
-                crowdLevel={temple.crowdLevel}
+                description={temple.description || "A sacred temple in Madhya Pradesh"}
+                crowdLevel="Medium"
               />
             ))}
           </div>
         ) : (
           <div className="text-center py-20">
-            <p className="text-xl text-muted-foreground">No temples found matching your filters</p>
+            <p className="text-xl text-muted-foreground">
+              {temples.length === 0 
+                ? "No temples available. Admin can add temples from the dashboard."
+                : "No temples found matching your filters"}
+            </p>
           </div>
         )}
       </section>
