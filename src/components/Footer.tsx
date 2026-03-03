@@ -12,7 +12,7 @@ const Footer = () => {
           {/* Brand Section */}
           <div className="col-span-1 md:col-span-2">
             <h3 className="text-2xl font-bold bg-gradient-devotional bg-clip-text text-transparent mb-3">
-              Avanti Yatra
+              DarshanEase
             </h3>
             <p className="text-muted-foreground mb-4 max-w-md">
               Smart Temple & Pilgrimage System
@@ -57,8 +57,8 @@ const Footer = () => {
             <ul className="space-y-3">
               <li className="flex items-center gap-2 text-muted-foreground">
                 <Mail className="h-4 w-4 text-primary" />
-                <a href="mailto:info@avantiyatra.in" className="hover:text-primary transition-colors">
-                  info@avantiyatra.in
+                <a href="mailto:info@darshanease.in" className="hover:text-primary transition-colors">
+                  info@darshanease.in
                 </a>
               </li>
               <li className="flex items-center gap-2 text-muted-foreground">
@@ -96,7 +96,7 @@ const Footer = () => {
 
         {/* Copyright */}
         <div className="pt-8 border-t border-border text-center text-sm text-muted-foreground">
-          <p>&copy; 2025 Avanti Yatra. All rights reserved.</p>
+          <p>&copy; 2025 DarshanEase. All rights reserved.</p>
         </div>
       </div>
     </footer>

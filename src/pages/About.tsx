@@ -12,7 +12,7 @@ const About = () => {
 
       <section className="bg-gradient-peaceful py-16">
         <div className="container mx-auto px-4">
-          <h1 className="text-4xl md:text-5xl font-bold text-center mb-4">About Avanti Yatra</h1>
+          <h1 className="text-4xl md:text-5xl font-bold text-center mb-4">About DarshanEase</h1>
           <p className="text-center text-muted-foreground text-lg max-w-2xl mx-auto">
             Bridging ancient spirituality with modern technology
           </p>
@@ -31,7 +31,7 @@ const About = () => {
           <Card>
             <CardContent className="pt-6">
               <p className="text-lg text-muted-foreground leading-relaxed">
-                Avanti Yatra is dedicated to preserving and promoting the rich spiritual heritage of
+                DarshanEase is dedicated to preserving and promoting the rich spiritual heritage of
                 Madhya Pradesh by seamlessly integrating technology with tradition. We aim to make
                 temple visits and pilgrimages more accessible, organized, and meaningful for devotees
                 across the globe.
@@ -112,7 +112,7 @@ const About = () => {
           <Card>
             <CardContent className="pt-6 space-y-4">
               <p className="text-muted-foreground leading-relaxed">
-                Avanti Yatra was born from a deep reverence for the spiritual heritage of Madhya
+                DarshanEase was born from a deep reverence for the spiritual heritage of Madhya
                 Pradesh and a vision to make temple pilgrimages more accessible and organized. The
                 state, known as the "Heart of India," is home to some of the most sacred shrines,
                 including the revered Jyotirlingas of Mahakaleshwar and Omkareshwar.
@@ -123,7 +123,7 @@ const About = () => {
                 that brings together ancient traditions and modern technology.
               </p>
               <p className="text-muted-foreground leading-relaxed">
-                Today, Avanti Yatra serves thousands of devotees, helping them connect with their
+                Today, DarshanEase serves thousands of devotees, helping them connect with their
                 faith while ensuring a smooth, respectful, and enriching pilgrimage experience.
               </p>
             </CardContent>
