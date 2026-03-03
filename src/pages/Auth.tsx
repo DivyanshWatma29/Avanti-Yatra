@@ -108,7 +108,7 @@ const Auth = () => {
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
             <h1 className="text-4xl font-bold bg-gradient-devotional bg-clip-text text-transparent mb-2">
-              Welcome to Avanti Yatra
+              Welcome to DarshanEase
             </h1>
             <p className="text-muted-foreground">
               Sign in to book darshan and manage your pilgrimages

@@ -108,10 +108,10 @@ const Contact = () => {
                   <div>
                     <h3 className="font-semibold mb-1">Email</h3>
                     <a
-                      href="mailto:info@avantiyatra.in"
+                      href="mailto:info@darshanease.in"
                       className="text-muted-foreground hover:text-primary transition-colors"
                     >
-                      info@avantiyatra.in
+                      info@darshanease.in
                     </a>
                   </div>
                 </div>
