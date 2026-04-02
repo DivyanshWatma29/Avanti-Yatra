@@ -35,7 +35,7 @@ const sendBookingConfirmation = async (booking) => {
   const subject = `Booking Confirmed – ${booking.templeName}`;
   const html = `
     <div style="font-family:sans-serif;max-width:600px;margin:auto">
-      <h2 style="color:#7c3aed">🛕 Avanti Yatra – Booking Confirmed</h2>
+      <h2 style="color:#7c3aed">Avanti Yatra – Booking Confirmed</h2>
       <p>Dear <strong>${booking.userName || 'Devotee'}</strong>,</p>
       <p>Your visit to <strong>${booking.templeName}</strong> has been confirmed.</p>
       <table style="width:100%;border-collapse:collapse;margin:16px 0">

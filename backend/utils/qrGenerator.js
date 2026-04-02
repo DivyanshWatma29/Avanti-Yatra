@@ -7,7 +7,7 @@ const generateQRCode = async (data) => {
 };
 
 const generateBookingToken = (bookingId, userId, templeId) => {
-  return `${uuidv4()}-${bookingId}-${templeId}`;
+  return `${uuidv4()}-${bookingId}-${userId}-${templeId}`;
 };
 
 module.exports = { generateQRCode, generateBookingToken };
