@@ -4,7 +4,7 @@ const Booking = require('../models/Booking');
 // POST /api/qr/validate  (admin only)
 const validateQR = async (req, res, next) => {
   try {
-    const { token } = req.body;
+    const token = String(req.body.token || '');
     if (!token) return res.status(400).json({ success: false, message: 'Token is required' });
 
     const qrToken = await QRToken.findOne({ token });

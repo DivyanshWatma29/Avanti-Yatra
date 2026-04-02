@@ -17,7 +17,8 @@ const register = async (req, res, next) => {
       return res.status(400).json({ success: false, message: 'Validation failed', errors: errors.array() });
     }
 
-    const { name, email, password, phone } = req.body;
+    const { name, password, phone } = req.body;
+    const email = String(req.body.email).toLowerCase().trim();
 
     const existing = await User.findOne({ email });
     if (existing) {
@@ -45,7 +46,8 @@ const login = async (req, res, next) => {
       return res.status(400).json({ success: false, message: 'Validation failed', errors: errors.array() });
     }
 
-    const { email, password } = req.body;
+    const email = String(req.body.email).toLowerCase().trim();
+    const { password } = req.body;
     const user = await User.findOne({ email }).select('+password');
     if (!user || !(await user.comparePassword(password))) {
       return res.status(401).json({ success: false, message: 'Invalid email or password' });
@@ -69,7 +71,7 @@ const login = async (req, res, next) => {
 // GET /api/auth/me
 const getMe = async (req, res, next) => {
   try {
-    const user = await User.findById(req.user.id);
+    const user = await User.findById(String(req.user.id));
     if (!user) return res.status(404).json({ success: false, message: 'User not found' });
     res.json({ success: true, data: user });
   } catch (err) {

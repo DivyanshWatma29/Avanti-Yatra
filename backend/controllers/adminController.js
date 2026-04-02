@@ -86,7 +86,8 @@ const sendAlert = async (req, res, next) => {
 // PUT /api/admin/slots  (placeholder – extend as needed)
 const manageSlots = async (req, res, next) => {
   try {
-    const { templeId, crowdLevel } = req.body;
+    const templeId = String(req.body.templeId || '');
+    const crowdLevel = String(req.body.crowdLevel || '');
     if (!templeId || !crowdLevel) {
       return res.status(400).json({ success: false, message: 'templeId and crowdLevel are required' });
     }
