@@ -34,24 +34,33 @@ const createTemple = async (req, res, next) => {
 // PUT /api/temples/:id  (admin only)
 const updateTemple = async (req, res, next) => {
   try {
-    const stringFields = [
-      'name', 'district', 'type', 'description', 'timings', 'deity',
-      'history', 'significance', 'crowdLevel', 'liveStreamUrl',
-    ];
-    const allowed = [...stringFields, 'festivals', 'howToReach', 'nearbyAttractions', 'isActive'];
+    const b = req.body;
     const updates = {};
-    allowed.forEach((key) => {
-      if (req.body[key] === undefined) return;
-      if (stringFields.includes(key)) {
-        updates[key] = String(req.body[key]);
-      } else {
-        updates[key] = req.body[key];
-      }
-    });
+
+    // Scalar string fields
+    const strFields = ['name', 'district', 'type', 'description', 'timings', 'deity',
+      'history', 'significance', 'crowdLevel', 'liveStreamUrl'];
+    strFields.forEach((k) => { if (b[k] !== undefined) updates[k] = String(b[k]); });
+
+    // Boolean
+    if (b.isActive !== undefined) updates.isActive = Boolean(b.isActive);
+
+    // Array of strings
+    if (Array.isArray(b.festivals)) updates.festivals = b.festivals.map(String);
+    if (Array.isArray(b.nearbyAttractions)) updates.nearbyAttractions = b.nearbyAttractions.map(String);
+
+    // Nested object – sanitize each sub-field
+    if (b.howToReach && typeof b.howToReach === 'object') {
+      updates.howToReach = {
+        road: b.howToReach.road !== undefined ? String(b.howToReach.road) : undefined,
+        train: b.howToReach.train !== undefined ? String(b.howToReach.train) : undefined,
+        air: b.howToReach.air !== undefined ? String(b.howToReach.air) : undefined,
+      };
+    }
 
     const temple = await Temple.findOneAndUpdate(
       { id: String(req.params.id) },
-      updates,
+      { $set: updates },
       { new: true, runValidators: true }
     );
     if (!temple) return res.status(404).json({ success: false, message: 'Temple not found' });
