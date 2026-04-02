@@ -82,10 +82,14 @@ const getMe = async (req, res, next) => {
 // PUT /api/auth/profile
 const updateProfile = async (req, res, next) => {
   try {
-    const { name, phone } = req.body;
+    const name = req.body.name !== undefined ? String(req.body.name) : undefined;
+    const phone = req.body.phone !== undefined ? String(req.body.phone) : undefined;
+    const updateData = {};
+    if (name !== undefined) updateData.name = name;
+    if (phone !== undefined) updateData.phone = phone;
     const user = await User.findByIdAndUpdate(
-      req.user.id,
-      { name, phone },
+      String(req.user.id),
+      updateData,
       { new: true, runValidators: true }
     );
     if (!user) return res.status(404).json({ success: false, message: 'User not found' });

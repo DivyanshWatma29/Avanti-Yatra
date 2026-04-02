@@ -34,14 +34,19 @@ const createTemple = async (req, res, next) => {
 // PUT /api/temples/:id  (admin only)
 const updateTemple = async (req, res, next) => {
   try {
-    const allowed = [
+    const stringFields = [
       'name', 'district', 'type', 'description', 'timings', 'deity',
-      'history', 'significance', 'crowdLevel', 'festivals', 'howToReach',
-      'nearbyAttractions', 'liveStreamUrl', 'isActive',
+      'history', 'significance', 'crowdLevel', 'liveStreamUrl',
     ];
+    const allowed = [...stringFields, 'festivals', 'howToReach', 'nearbyAttractions', 'isActive'];
     const updates = {};
     allowed.forEach((key) => {
-      if (req.body[key] !== undefined) updates[key] = req.body[key];
+      if (req.body[key] === undefined) return;
+      if (stringFields.includes(key)) {
+        updates[key] = String(req.body[key]);
+      } else {
+        updates[key] = req.body[key];
+      }
     });
 
     const temple = await Temple.findOneAndUpdate(
